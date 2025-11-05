@@ -1,0 +1,13 @@
+import { inject } from '@adonisjs/core'
+// import type { HttpContext } from '@adonisjs/core/http'
+
+import AgentsService from '#services/agents_service'
+
+@inject()
+export default class AgentsController {
+  constructor(private readonly agentsService: AgentsService) {}
+
+  index() {
+    return this.agentsService.findAll()
+  }
+}

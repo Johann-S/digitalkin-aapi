@@ -18,8 +18,8 @@
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
     "#exceptions/*": "./app/exceptions/*.js",
+    "#repositories/*": "./app/repositories/*.js",
     "#models/*": "./app/models/*.js",
-    "#mails/*": "./app/mails/*.js",
     "#services/*": "./app/services/*.js",
     "#listeners/*": "./app/listeners/*.js",
     "#events/*": "./app/events/*.js",
@@ -36,6 +36,7 @@
   "dependencies": {
     "@adonisjs/core": "^6.19.1",
     "@adonisjs/redis": "^9.2.0",
+    "http-status-codes": "^2.3.0",
     "parse-duration": "^2.1.4",
     "reflect-metadata": "^0.2.2"
   },

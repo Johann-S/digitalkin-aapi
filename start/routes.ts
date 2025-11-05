@@ -8,5 +8,10 @@
 */
 
 import router from '@adonisjs/core/services/router'
+const AgentsController = () => import('#controllers/agents_controller')
 
-router.get('/', async () => 'It works!')
+router
+  .group(() => {
+    router.get('', [AgentsController, 'index'])
+  })
+  .prefix('/agents')

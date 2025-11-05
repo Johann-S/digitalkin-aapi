@@ -33,6 +33,12 @@
     "#tests/*": "./tests/*.js",
     "#config/*": "./config/*.js"
   },
+  "dependencies": {
+    "@adonisjs/core": "^6.19.1",
+    "@adonisjs/redis": "^9.2.0",
+    "parse-duration": "^2.1.4",
+    "reflect-metadata": "^0.2.2"
+  },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",
     "@adonisjs/eslint-config": "^2.1.2",
@@ -45,14 +51,9 @@
     "@types/node": "^22.15.18",
     "eslint": "^9.39.1",
     "hot-hook": "^0.4.0",
-    "pino-pretty": "^13.1.2",
     "prettier": "^3.6.2",
     "ts-node-maintained": "^10.9.6",
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@adonisjs/core": "^6.19.1",
-    "reflect-metadata": "^0.2.2"
   },
   "hotHook": {
     "boundaries": [

@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "9002e4fc-0572-4005-8c10-6c390bad5b6b",
+		"name": "Digitalkin API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5753776"
+	},
+	"item": [
+		{
+			"name": "Agents",
+			"item": [
+				{
+					"name": "get agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/agents",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one agent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/agents/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create rps agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"RPS\",\n    \"type\": \"rps\",\n    \"persona\": \"You are a master at rock paper scissors\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/agents",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create openai agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Chillaxx\",\n    \"type\": \"openai\",\n    \"persona\": \"You are a very chill helpful assistant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/agents",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update agent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"persona\": \"You are a master at rock paper scissors with an incredible strategy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/agents/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete agent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/agents/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"agents",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "rps",
+					"item": [
+						{
+							"name": "send message rock/🪨",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"message\": \"🪨\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/conversations/wMsKuMaJHb3gScmPHlsSQ/messages",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"conversations",
+										"wMsKuMaJHb3gScmPHlsSQ",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "send message paper/📄",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"message\": \"📄\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/conversations/EP64N1r4iJc-Ugk_mycKW/messages",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"conversations",
+										"EP64N1r4iJc-Ugk_mycKW",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "send message scissors/✂️",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"message\": \"✂️\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/conversations/EP64N1r4iJc-Ugk_mycKW/messages",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"conversations",
+										"EP64N1r4iJc-Ugk_mycKW",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Play at Rock, Paper, Scissors with our agents.  \nFirst create a conversation put the id in the different requests."
+				},
+				{
+					"name": "create conversation with rps agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agentId\": 1,\n    \"message\": \"paper\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/conversations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create conversation with openai agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"agentId\": 2,\n    \"message\": \"Help I need somebody!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/conversations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Répète et répépète tombe à l'eau 5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/conversations/Nmf5a5O8mgV-ZF-9QO92u/messages",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"conversations",
+								"Nmf5a5O8mgV-ZF-9QO92u",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

@@ -18,4 +18,8 @@ export default class AgentsController {
   getAgent(ctx: HttpContext) {
     return this.agentsService.getAgent(ctx.params.id)
   }
+
+  update(ctx: HttpContext) {
+    return this.agentsService.update(ctx.params.id, ctx.request.body())
+  }
 }

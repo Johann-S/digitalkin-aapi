@@ -57,6 +57,15 @@ export class AgentRepository {
     return agentValidator.parse(JSON.parse(agent as string))
   }
 
+  async update(id: number, agent: AgentModel) {
+    const agentNameSlug = this.slugifyAgentName(agent.name)
+    const agentKey = `${this.prefix}:${id}-${agentNameSlug}`
+
+    await redis.set(agentKey, JSON.stringify(agent))
+
+    return agent
+  }
+
   private async generateId(): Promise<number> {
     return await redis.incr('agent-id')
   }

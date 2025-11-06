@@ -13,4 +13,9 @@ export const createAgentValidator = z.object({
   persona: z.string().trim().min(1),
 })
 
+export const updateAgentValidator = z.object({
+  persona: z.string().trim().min(1),
+})
+
 export type CreateAgentRequest = z.infer<typeof createAgentValidator>
+export type UpdateAgentRequest = z.infer<typeof updateAgentValidator>

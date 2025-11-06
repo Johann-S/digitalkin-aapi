@@ -2,12 +2,19 @@ import logger from '@adonisjs/core/services/logger'
 import { inject } from '@adonisjs/core'
 
 import { AgentRepository } from '#repositories/agent_repository'
-import { CreateAgentRequest, createAgentValidator } from '#validators/agent_validator'
+import {
+  CreateAgentRequest,
+  createAgentValidator,
+  UpdateAgentRequest,
+  updateAgentValidator,
+} from '#validators/agent_validator'
 import { asyncWrap } from '#utilities/util'
+import { AgentModel } from '#models/agent_model'
 
 /** Exceptions */
 import InternalServerErrorException from '#exceptions/internal_server_error_exception'
 import BadRequestException from '#exceptions/bad_request_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 
 @inject()
 export default class AgentsService {
@@ -18,7 +25,7 @@ export default class AgentsService {
 
     if (findAllAgents.error) {
       logger.error('unable to get agents', findAllAgents.error)
-      throw new InternalServerErrorException('unable to get agents')
+      throw new InternalServerErrorException('Unable to get agents')
     }
 
     return findAllAgents.result
@@ -36,7 +43,7 @@ export default class AgentsService {
 
     if (agentAlreadyExists.error) {
       logger.error('unable to count agents by name', agentAlreadyExists.error)
-      throw new InternalServerErrorException('unable to create an agent')
+      throw new InternalServerErrorException('Unable to create an agent')
     }
 
     if (agentAlreadyExists.result && agentAlreadyExists.result > 0) {
@@ -47,7 +54,7 @@ export default class AgentsService {
 
     if (createAgent.error) {
       logger.error('unable to create an agent', createAgent.error)
-      throw new InternalServerErrorException('unable to create an agent')
+      throw new InternalServerErrorException('Unable to create an agent')
     }
 
     return createAgent.result
@@ -58,9 +65,37 @@ export default class AgentsService {
 
     if (getAgent.error) {
       logger.error('unable to get agent', getAgent.error)
-      throw new InternalServerErrorException('unable to get agent')
+      throw new InternalServerErrorException('Unable to get agent')
+    }
+
+    if (!getAgent.result) {
+      throw new NotFoundException('Agent not found')
     }
 
     return getAgent.result
+  }
+
+  async update(id: number, data: Partial<UpdateAgentRequest>) {
+    const validation = updateAgentValidator.safeParse(data)
+
+    if (!validation.success) {
+      throw new BadRequestException(validation.error.message)
+    }
+
+    const agent = await this.getAgent(id)
+    const updatedAgent = {
+      ...agent,
+      persona: validation.data.persona,
+      updatedAt: new Date(),
+    } satisfies AgentModel
+
+    const updateAgent = await asyncWrap(this.agentRepository.update(id, updatedAgent))
+
+    if (updateAgent.error) {
+      logger.error('unable to update agent', updateAgent.error)
+      throw new InternalServerErrorException('Unable to update agent')
+    }
+
+    return updatedAgent
   }
 }

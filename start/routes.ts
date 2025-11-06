@@ -15,5 +15,6 @@ router
     router.get('', [AgentsController, 'index'])
     router.get(':id', [AgentsController, 'getAgent']).where('id', router.matchers.number())
     router.post('', [AgentsController, 'create'])
+    router.put(':id', [AgentsController, 'update']).where('id', router.matchers.number())
   })
   .prefix('/agents')

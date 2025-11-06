@@ -20,7 +20,7 @@ export class AgentRepository {
   }
 
   async countByName(name: string): Promise<number> {
-    const agentKeyPattern = `${this.prefix}:*:${this.slugifyAgentName(name)}`
+    const agentKeyPattern = `${this.prefix}:*-${this.slugifyAgentName(name)}`
     const keys = await redis.keys(agentKeyPattern)
 
     return keys.length
@@ -37,7 +37,7 @@ export class AgentRepository {
     } satisfies AgentModel
 
     const agentNameSlug = this.slugifyAgentName(agent.name)
-    const agentKey = `${this.prefix}:${id}:${agentNameSlug}`
+    const agentKey = `${this.prefix}:${id}-${agentNameSlug}`
 
     await redis.set(agentKey, JSON.stringify(agent))
 
@@ -45,7 +45,7 @@ export class AgentRepository {
   }
 
   async getAgent(id: number) {
-    const agentKeyPattern = `${this.prefix}:${id}:*`
+    const agentKeyPattern = `${this.prefix}:${id}-*`
     const keys = await redis.keys(agentKeyPattern)
 
     if (keys.length === 0) {

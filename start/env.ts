@@ -22,6 +22,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   REDIS_PORT: Env.schema.number(),
   REDIS_PASSWORD: Env.schema.string.optional(),
 
+  OPENAI_API_KEY: Env.schema.string.optional(),
+
   /*
   |----------------------------------------------------------
   | Variables for configuring the lock package

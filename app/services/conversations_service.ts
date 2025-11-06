@@ -25,6 +25,7 @@ import NotFoundException from '#exceptions/not_found_exception'
 
 /** Models */
 import { AgentModel } from '#models/agent_model'
+import { OpenAICustomAgentService } from './custom-agents/openai_custom_agent.js'
 
 @inject()
 export default class ConversationsService {
@@ -50,7 +51,10 @@ export default class ConversationsService {
 
     const conversation = createConversation.result!
     const customAgentService = this.getCustomAgentService(agent)
-    const answer = await customAgentService.answer(conversation.messages)
+    const answer = await customAgentService.answer({
+      persona: agent.persona,
+      messages: conversation.messages,
+    })
 
     conversation.messages.push(answer)
 
@@ -99,7 +103,10 @@ export default class ConversationsService {
     })
 
     await asyncWrap(this.conversationsRepository.update(conversation))
-    const answer = await customAgentService.answer(conversation.messages)
+    const answer = await customAgentService.answer({
+      persona: agent.persona,
+      messages: conversation.messages,
+    })
 
     conversation.messages.push(answer)
 
@@ -119,6 +126,8 @@ export default class ConversationsService {
         return new EchoCustomAgentService()
       case 'rps':
         return new RPSCustomAgentService()
+      case 'openai':
+        return new OpenAICustomAgentService()
       default:
         return new EchoCustomAgentService()
     }

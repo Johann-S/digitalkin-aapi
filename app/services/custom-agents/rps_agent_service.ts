@@ -24,10 +24,13 @@ export class RPSCustomAgentService extends AbstractCustomAgent {
     scissors: 'rock',
   }
 
-  async answer(messages: ConversationMessageModel[]): Promise<ConversationMessageModel> {
+  async answer(data: {
+    persona: string
+    messages: ConversationMessageModel[]
+  }): Promise<ConversationMessageModel> {
     await delay(300) // Simulate a delay
 
-    const lasUserMessage = messages[messages.length - 1]
+    const lasUserMessage = data.messages[data.messages.length - 1]
     const normalizedMove = this.normalizeMove(lasUserMessage.content)
 
     if (!normalizedMove) {
@@ -41,7 +44,7 @@ export class RPSCustomAgentService extends AbstractCustomAgent {
 
     // Use only previous messages (history) to predict, not the current user move
     // In RPS, both players choose simultaneously
-    const historyMessages = messages.slice(0, -1)
+    const historyMessages = data.messages.slice(0, -1)
     const move = this.determineMove(historyMessages)
 
     return {

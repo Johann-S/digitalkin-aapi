@@ -13,5 +13,6 @@ const AgentsController = () => import('#controllers/agents_controller')
 router
   .group(() => {
     router.get('', [AgentsController, 'index'])
+    router.post('', [AgentsController, 'create'])
   })
   .prefix('/agents')

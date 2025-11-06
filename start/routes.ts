@@ -13,6 +13,7 @@ const AgentsController = () => import('#controllers/agents_controller')
 router
   .group(() => {
     router.get('', [AgentsController, 'index'])
+    router.get(':id', [AgentsController, 'getAgent']).where('id', router.matchers.number())
     router.post('', [AgentsController, 'create'])
   })
   .prefix('/agents')

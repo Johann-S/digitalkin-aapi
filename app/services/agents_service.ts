@@ -17,7 +17,7 @@ export default class AgentsService {
     const findAllAgents = await asyncWrap(this.agentRepository.findAll())
 
     if (findAllAgents.error) {
-      logger.error('unable to get agents because of an internal server error', findAllAgents.error)
+      logger.error('unable to get agents', findAllAgents.error)
       throw new InternalServerErrorException('unable to get agents')
     }
 
@@ -35,10 +35,7 @@ export default class AgentsService {
     const agentAlreadyExists = await asyncWrap(this.agentRepository.countByName(agentData.name))
 
     if (agentAlreadyExists.error) {
-      logger.error(
-        'unable to count agents by name because of an internal server error',
-        agentAlreadyExists.error
-      )
+      logger.error('unable to count agents by name', agentAlreadyExists.error)
       throw new InternalServerErrorException('unable to create an agent')
     }
 
@@ -49,13 +46,21 @@ export default class AgentsService {
     const createAgent = await asyncWrap(this.agentRepository.create(agentData))
 
     if (createAgent.error) {
-      logger.error(
-        'unable to create an agent because of an internal server error',
-        createAgent.error
-      )
+      logger.error('unable to create an agent', createAgent.error)
       throw new InternalServerErrorException('unable to create an agent')
     }
 
     return createAgent.result
+  }
+
+  async getAgent(id: number) {
+    const getAgent = await asyncWrap(this.agentRepository.getAgent(id))
+
+    if (getAgent.error) {
+      logger.error('unable to get agent', getAgent.error)
+      throw new InternalServerErrorException('unable to get agent')
+    }
+
+    return getAgent.result
   }
 }

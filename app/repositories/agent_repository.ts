@@ -44,6 +44,19 @@ export class AgentRepository {
     return agent
   }
 
+  async getAgent(id: number) {
+    const agentKeyPattern = `${this.prefix}:${id}:*`
+    const keys = await redis.keys(agentKeyPattern)
+
+    if (keys.length === 0) {
+      return null
+    }
+
+    const agent = await redis.get(keys[0])
+
+    return agentValidator.parse(JSON.parse(agent as string))
+  }
+
   private async generateId(): Promise<number> {
     return await redis.incr('agent-id')
   }

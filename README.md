@@ -36,6 +36,7 @@ LOG_LEVEL=info
 REDIS_HOST=redis
 REDIS_PORT=6379
 REDIS_PASSWORD=your-redis-password  # optional
+LOCK_STORE=redis
 ```
 
 > **Note:** Generate a secure `APP_KEY` using: `node ace generate:key`

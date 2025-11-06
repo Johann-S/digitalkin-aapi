@@ -44,6 +44,7 @@ export default defineConfig({
       environment: ['repl', 'test'],
     },
     () => import('@adonisjs/redis/redis_provider'),
+    () => import('@adonisjs/lock/lock_provider'),
   ],
 
   /*

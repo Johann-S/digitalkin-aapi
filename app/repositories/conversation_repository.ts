@@ -1,4 +1,5 @@
 import redis from '@adonisjs/redis/services/main'
+import locks from '@adonisjs/lock/services/main'
 import { nanoid } from 'nanoid'
 
 import {
@@ -36,7 +37,14 @@ export class ConversationRepository {
     conversation.updatedAt = new Date()
 
     const conversationKey = `${this.prefix}:${conversation.agentId}:${conversation.id}`
+    const { lock, acquired } = await this.getConversationLockAndAcquire(`${conversationKey}-update`)
+
+    if (!acquired) {
+      throw new Error('Unable to acquire lock to update conversation')
+    }
+
     await redis.set(conversationKey, JSON.stringify(conversation))
+    await lock.release()
 
     return conversation
   }
@@ -52,5 +60,18 @@ export class ConversationRepository {
     const conversation = await redis.get(keys[0])
 
     return conversationValidator.parse(JSON.parse(conversation as string))
+  }
+
+  private async getConversationLockAndAcquire(conversationKey: string) {
+    const lock = locks.createLock(conversationKey)
+    const acquired = await lock.acquire({
+      retry: {
+        attempts: 5,
+        delay: 1000,
+        timeout: 5000,
+      },
+    })
+
+    return { lock, acquired }
   }
 }

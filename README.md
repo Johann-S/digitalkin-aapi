@@ -2,6 +2,31 @@
 
 AdonisJS-based API for DigitalKin agents.
 
+## 🧠 Overview
+
+The **DigitalKin Agent API** provides a framework for creating and interacting with autonomous agents.
+
+Agents can be:
+- **Built-in** agents like `EchoAgent` or `RpsAgent`
+- **AI-powered** agents leveraging OpenAI's API with customizable personas
+
+This API handles:
+- Agent creation and persistence in Redis
+- Conversation management and message history
+- Locking and concurrency control via AdonisJS Lock
+- Streaming responses
+
+## 🤖 Agent Types
+
+- **EchoAgent** → repeats user messages  
+- **RpsAgent** → plays Rock-Paper-Scissors, I dare you to beat it!
+- **OpenAIAgent** → uses OpenAI to generate contextual replies  
+
+## 📘 API Reference
+
+See full API documentation here:  
+➡️ [docs/API.md](./docs/API.md)
+
 ## Prerequisites
 
 - Node.js 22.x
@@ -35,8 +60,9 @@ LOG_LEVEL=info
 
 REDIS_HOST=redis
 REDIS_PORT=6379
-REDIS_PASSWORD=your-redis-password  # optional
+REDIS_PASSWORD="your-redis-password"
 LOCK_STORE=redis
+OPENAI_API_KEY="" #optional
 ```
 
 > **Note:** Generate a secure `APP_KEY` using: `node ace generate:key`

@@ -8,7 +8,9 @@
 */
 
 import router from '@adonisjs/core/services/router'
+
 const AgentsController = () => import('#controllers/agents_controller')
+const ConversationsController = () => import('#controllers/conversations_controller')
 
 router
   .group(() => {
@@ -19,3 +21,10 @@ router
     router.delete(':id', [AgentsController, 'delete']).where('id', router.matchers.number())
   })
   .prefix('/agents')
+
+router
+  .group(() => {
+    router.post('', [ConversationsController, 'create'])
+    router.post(':id/messages', [ConversationsController, 'sendMessage'])
+  })
+  .prefix('/conversations')

@@ -24,7 +24,7 @@ export default class AgentsService {
     const findAllAgents = await asyncWrap(this.agentRepository.findAll())
 
     if (findAllAgents.error) {
-      logger.error('unable to get agents', findAllAgents.error)
+      logger.error(findAllAgents.error)
       throw new InternalServerErrorException('Unable to get agents')
     }
 

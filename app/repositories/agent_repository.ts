@@ -31,6 +31,7 @@ export class AgentRepository {
     const agent = {
       id,
       name: data.name,
+      type: data.type,
       persona: data.persona,
       createdAt: new Date(),
       updatedAt: new Date(),

@@ -9,3 +9,5 @@ export const asyncWrap = async <T, Y = Error>(
     return { error, result: null }
   }
 }
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

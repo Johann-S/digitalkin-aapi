@@ -1,5 +1,6 @@
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
+import { nanoid } from 'nanoid'
 
 import {
   CreateConversationRequest,
@@ -8,7 +9,10 @@ import {
   sendMessageConversationValidator,
 } from '#validators/conversation_validator'
 import { asyncWrap } from '#utilities/util'
+
+/** Custom Agents */
 import { EchoCustomAgentService } from '#services/custom-agents/echo_agent_service'
+import { RPSCustomAgentService } from '#services/custom-agents/rps_agent_service'
 
 /** Repositories */
 import { ConversationRepository } from '#repositories/conversation_repository'
@@ -21,7 +25,6 @@ import NotFoundException from '#exceptions/not_found_exception'
 
 /** Models */
 import { AgentModel } from '#models/agent_model'
-import { nanoid } from 'nanoid'
 
 @inject()
 export default class ConversationsService {
@@ -114,6 +117,8 @@ export default class ConversationsService {
     switch (agent.type) {
       case 'echo':
         return new EchoCustomAgentService()
+      case 'rps':
+        return new RPSCustomAgentService()
       default:
         return new EchoCustomAgentService()
     }

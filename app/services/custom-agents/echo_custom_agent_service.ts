@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid'
 
-import { AbstractCustomAgent } from '#services/custom-agents/abstract_custom_agent'
+import { CustomAgent } from '#models/custom_agent'
 import { ConversationMessageModel } from '#models/conversation_model'
 import { delay } from '#utilities/util'
 
-export class EchoCustomAgentService extends AbstractCustomAgent {
+export class EchoCustomAgentService implements CustomAgent {
   async *answerStream(data: {
     persona: string
     messages: ConversationMessageModel[]

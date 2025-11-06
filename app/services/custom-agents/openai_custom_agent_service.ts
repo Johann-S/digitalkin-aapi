@@ -2,11 +2,11 @@ import { nanoid } from 'nanoid'
 import OpenAI from 'openai'
 import Env from '#start/env'
 
-import { AbstractCustomAgent } from '#services/custom-agents/abstract_custom_agent'
+import { CustomAgent } from '#models/custom_agent'
 import { ConversationMessageModel } from '#models/conversation_model'
-import { EchoCustomAgentService } from '#services/custom-agents/echo_agent_service'
+import { EchoCustomAgentService } from '#services/custom-agents/echo_custom_agent_service'
 
-export class OpenAICustomAgentService extends AbstractCustomAgent {
+export class OpenAICustomAgentService implements CustomAgent {
   private getOpenAIClient(): OpenAI | null {
     const openAiKey = Env.get('OPENAI_API_KEY')
 

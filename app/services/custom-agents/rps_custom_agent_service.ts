@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid'
 
-import { AbstractCustomAgent } from '#services/custom-agents/abstract_custom_agent'
+import { CustomAgent } from '#models/custom_agent'
 import { ConversationMessageModel } from '#models/conversation_model'
 import { delay } from '#utilities/util'
 
 // Rocker Paper Scissors custom agent
-export class RPSCustomAgentService extends AbstractCustomAgent {
+export class RPSCustomAgentService implements CustomAgent {
   private readonly emojiMap: Record<string, string> = {
     '🪨': 'rock',
     '📄': 'paper',

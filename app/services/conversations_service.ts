@@ -12,9 +12,9 @@ import {
 import { asyncWrap } from '#utilities/util'
 
 /** Custom Agents */
-import { EchoCustomAgentService } from '#services/custom-agents/echo_agent_service'
-import { RPSCustomAgentService } from '#services/custom-agents/rps_agent_service'
-import { OpenAICustomAgentService } from '#services/custom-agents/openai_custom_agent'
+import { EchoCustomAgentService } from '#services/custom-agents/echo_custom_agent_service'
+import { RPSCustomAgentService } from '#services/custom-agents/rps_custom_agent_service'
+import { OpenAICustomAgentService } from '#services/custom-agents/openai_custom_agent_service'
 
 /** Repositories */
 import { ConversationRepository } from '#repositories/conversation_repository'

@@ -98,4 +98,14 @@ export default class AgentsService {
 
     return updatedAgent
   }
+
+  async delete(id: number) {
+    const agent = await this.getAgent(id)
+    const deleteAgent = await asyncWrap(this.agentRepository.delete(agent))
+
+    if (deleteAgent.error) {
+      logger.error('unable to delete agent', deleteAgent.error)
+      throw new InternalServerErrorException('Unable to delete agent')
+    }
+  }
 }

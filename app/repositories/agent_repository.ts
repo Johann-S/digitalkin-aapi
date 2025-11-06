@@ -66,6 +66,13 @@ export class AgentRepository {
     return agent
   }
 
+  async delete(agent: AgentModel) {
+    const agentNameSlug = this.slugifyAgentName(agent.name)
+    const agentKey = `${this.prefix}:${agent.id}-${agentNameSlug}`
+
+    await redis.del(agentKey)
+  }
+
   private async generateId(): Promise<number> {
     return await redis.incr('agent-id')
   }

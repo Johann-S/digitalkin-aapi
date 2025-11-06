@@ -22,4 +22,8 @@ export default class AgentsController {
   update(ctx: HttpContext) {
     return this.agentsService.update(ctx.params.id, ctx.request.body())
   }
+
+  delete(ctx: HttpContext) {
+    return this.agentsService.delete(ctx.params.id)
+  }
 }

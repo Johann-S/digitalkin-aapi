@@ -1,8 +1,8 @@
 import { ConversationMessageModel } from '#models/conversation_model'
 
 export abstract class AbstractCustomAgent {
-  abstract answer(data: {
+  abstract answerStream(data: {
     persona: string
     messages: ConversationMessageModel[]
-  }): Promise<ConversationMessageModel>
+  }): AsyncGenerator<string, ConversationMessageModel>
 }

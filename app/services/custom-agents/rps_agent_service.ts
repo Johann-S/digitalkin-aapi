@@ -24,33 +24,34 @@ export class RPSCustomAgentService extends AbstractCustomAgent {
     scissors: 'rock',
   }
 
-  async answer(data: {
+  async *answerStream(data: {
     persona: string
     messages: ConversationMessageModel[]
-  }): Promise<ConversationMessageModel> {
+  }): AsyncGenerator<string, ConversationMessageModel> {
     await delay(300) // Simulate a delay
 
     const lasUserMessage = data.messages[data.messages.length - 1]
     const normalizedMove = this.normalizeMove(lasUserMessage.content)
 
+    let content: string
+
     if (!normalizedMove) {
-      return {
-        id: nanoid(),
-        role: 'assistant',
-        content: "I don't understand your move. Please use rock, paper, or scissors or 🪨, 📄, ✂️",
-        createdAt: new Date(),
-      }
+      content =
+        "I don't understand your move. Please use rock, paper, or scissors. Emojis are also accepted: 🪨, 📄, ✂️"
+    } else {
+      // Use only previous messages (history) to predict, not the current user move
+      // In RPS, both players choose simultaneously
+      const historyMessages = data.messages.slice(0, -1)
+      const move = this.determineMove(historyMessages)
+      content = this.textToEmoji[move] || move
     }
 
-    // Use only previous messages (history) to predict, not the current user move
-    // In RPS, both players choose simultaneously
-    const historyMessages = data.messages.slice(0, -1)
-    const move = this.determineMove(historyMessages)
+    yield content
 
     return {
       id: nanoid(),
       role: 'assistant',
-      content: this.textToEmoji[move] || move,
+      content,
       createdAt: new Date(),
     }
   }

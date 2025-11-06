@@ -7,34 +7,60 @@ import { ConversationMessageModel } from '#models/conversation_model'
 import { EchoCustomAgentService } from '#services/custom-agents/echo_agent_service'
 
 export class OpenAICustomAgentService extends AbstractCustomAgent {
-  async answer(data: {
-    persona: string
-    messages: ConversationMessageModel[]
-  }): Promise<ConversationMessageModel> {
+  private getOpenAIClient(): OpenAI | null {
     const openAiKey = Env.get('OPENAI_API_KEY')
 
     if (!openAiKey) {
-      return new EchoCustomAgentService().answer(data)
+      return null
     }
 
-    const openai = new OpenAI({
+    return new OpenAI({
       apiKey: openAiKey,
     })
+  }
 
-    const inputs = data.messages.map((message) => ({
-      role: message.role,
-      content: message.content,
-    }))
-    const response = await openai.responses.create({
+  async *answerStream(data: {
+    persona: string
+    messages: ConversationMessageModel[]
+  }): AsyncGenerator<string, ConversationMessageModel> {
+    const openai = this.getOpenAIClient()
+
+    if (!openai) {
+      return yield* new EchoCustomAgentService().answerStream(data)
+    }
+
+    const messages = [
+      { role: 'system' as const, content: data.persona },
+      ...data.messages.map((message) => ({
+        role: message.role as 'user' | 'assistant',
+        content: message.content,
+      })),
+    ]
+
+    const stream = await openai.chat.completions.create({
+      messages,
       model: 'gpt-4o-mini',
-      input: [{ role: 'user', content: data.persona }, ...inputs],
+      stream: true,
     })
 
+    let fullContent = ''
+    const messageId = nanoid()
+    const createdAt = new Date()
+
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || ''
+
+      if (content) {
+        fullContent += content
+        yield content
+      }
+    }
+
     return {
-      id: nanoid(),
+      id: messageId,
       role: 'assistant',
-      content: response.output_text,
-      createdAt: new Date(response.created_at * 1000),
+      content: fullContent,
+      createdAt,
     }
   }
 }

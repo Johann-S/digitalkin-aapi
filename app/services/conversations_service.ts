@@ -1,6 +1,7 @@
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
 import { nanoid } from 'nanoid'
+import type { Response } from '@adonisjs/core/http'
 
 import {
   CreateConversationRequest,
@@ -13,6 +14,7 @@ import { asyncWrap } from '#utilities/util'
 /** Custom Agents */
 import { EchoCustomAgentService } from '#services/custom-agents/echo_agent_service'
 import { RPSCustomAgentService } from '#services/custom-agents/rps_agent_service'
+import { OpenAICustomAgentService } from '#services/custom-agents/openai_custom_agent'
 
 /** Repositories */
 import { ConversationRepository } from '#repositories/conversation_repository'
@@ -25,7 +27,6 @@ import NotFoundException from '#exceptions/not_found_exception'
 
 /** Models */
 import { AgentModel } from '#models/agent_model'
-import { OpenAICustomAgentService } from './custom-agents/openai_custom_agent.js'
 
 @inject()
 export default class ConversationsService {
@@ -34,7 +35,14 @@ export default class ConversationsService {
     private readonly agentRepository: AgentRepository
   ) {}
 
-  async create(data: Partial<CreateConversationRequest>) {
+  async create(data: Partial<CreateConversationRequest>, ctxResponse: Response) {
+    ctxResponse.relayHeaders()
+    ctxResponse.response.setHeader('Content-Type', 'application/x-ndjson')
+    ctxResponse.response.setHeader('Transfer-Encoding', 'chunked')
+    ctxResponse.response.setHeader('Cache-Control', 'no-cache')
+    ctxResponse.response.setHeader('Connection', 'keep-alive')
+    ctxResponse.response.write('')
+
     const validation = createConversationValidator.safeParse(data)
 
     if (!validation.success) {
@@ -51,12 +59,42 @@ export default class ConversationsService {
 
     const conversation = createConversation.result!
     const customAgentService = this.getCustomAgentService(agent)
-    const answer = await customAgentService.answer({
+    const stream = customAgentService.answerStream({
       persona: agent.persona,
       messages: conversation.messages,
     })
 
-    conversation.messages.push(answer)
+    try {
+      let result = await stream.next()
+
+      while (!result.done) {
+        const chunk = result.value
+        const payload = JSON.stringify({ type: 'chunk', content: chunk })
+        ctxResponse.response.write(`${payload}\n`)
+        result = await stream.next()
+      }
+
+      if (result.value) {
+        conversation.messages.push(result.value)
+
+        const completionPayload = JSON.stringify({
+          type: 'complete',
+          conversationId: conversation.id,
+          message: result.value,
+        })
+        ctxResponse.response.write(`${completionPayload}\n`)
+      }
+    } catch (error) {
+      logger.error(error)
+      const errorPayload = JSON.stringify({
+        type: 'error',
+        error: 'Streaming failed',
+      })
+      ctxResponse.response.write(`${errorPayload}\n`)
+      throw new InternalServerErrorException('Streaming failed')
+    } finally {
+      ctxResponse.response.end()
+    }
 
     const updateConversation = await asyncWrap(this.conversationsRepository.update(conversation))
 
@@ -67,11 +105,22 @@ export default class ConversationsService {
 
     return {
       conversationId: conversation.id,
-      answer: answer,
+      answer: conversation.messages[conversation.messages.length - 1],
     }
   }
 
-  async sendMessage(conversationId: string, data: Partial<SendMessageConversationRequest>) {
+  async sendMessage(
+    conversationId: string,
+    data: Partial<SendMessageConversationRequest>,
+    ctxResponse: Response
+  ) {
+    ctxResponse.relayHeaders()
+    ctxResponse.response.setHeader('Content-Type', 'application/x-ndjson')
+    ctxResponse.response.setHeader('Transfer-Encoding', 'chunked')
+    ctxResponse.response.setHeader('Cache-Control', 'no-cache')
+    ctxResponse.response.setHeader('Connection', 'keep-alive')
+    ctxResponse.response.write('')
+
     const validation = sendMessageConversationValidator.safeParse(data)
 
     if (!validation.success) {
@@ -103,12 +152,41 @@ export default class ConversationsService {
     })
 
     await asyncWrap(this.conversationsRepository.update(conversation))
-    const answer = await customAgentService.answer({
+    const stream = customAgentService.answerStream({
       persona: agent.persona,
       messages: conversation.messages,
     })
 
-    conversation.messages.push(answer)
+    try {
+      let result = await stream.next()
+
+      while (!result.done) {
+        const chunk = result.value
+        const payload = JSON.stringify({ type: 'chunk', content: chunk })
+        ctxResponse.response.write(`${payload}\n`)
+        result = await stream.next()
+      }
+
+      if (result.value) {
+        conversation.messages.push(result.value)
+
+        const completionPayload = JSON.stringify({
+          type: 'complete',
+          message: result.value,
+        })
+        ctxResponse.response.write(`${completionPayload}\n`)
+      }
+    } catch (error) {
+      logger.error(error)
+      const errorPayload = JSON.stringify({
+        type: 'error',
+        error: 'Streaming failed',
+      })
+      ctxResponse.response.write(`${errorPayload}\n`)
+      throw new InternalServerErrorException('Streaming failed')
+    } finally {
+      ctxResponse.response.end()
+    }
 
     const updateConversation = await asyncWrap(this.conversationsRepository.update(conversation))
 

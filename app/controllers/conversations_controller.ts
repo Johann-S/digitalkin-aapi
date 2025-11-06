@@ -8,10 +8,10 @@ export default class ConversationsController {
   constructor(private readonly conversationsService: ConversationsService) {}
 
   create(ctx: HttpContext) {
-    return this.conversationsService.create(ctx.request.body())
+    return this.conversationsService.create(ctx.request.body(), ctx.response)
   }
 
   sendMessage(ctx: HttpContext) {
-    return this.conversationsService.sendMessage(ctx.params.id, ctx.request.body())
+    return this.conversationsService.sendMessage(ctx.params.id, ctx.request.body(), ctx.response)
   }
 }

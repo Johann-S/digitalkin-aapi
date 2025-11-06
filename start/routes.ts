@@ -26,5 +26,6 @@ router
   .group(() => {
     router.post('', [ConversationsController, 'create'])
     router.post(':id/messages', [ConversationsController, 'sendMessage'])
+    router.get(':id', [ConversationsController, 'getConversation'])
   })
   .prefix('/conversations')

@@ -14,4 +14,8 @@ export default class ConversationsController {
   sendMessage(ctx: HttpContext) {
     return this.conversationsService.sendMessage(ctx.params.id, ctx.request.body(), ctx.response)
   }
+
+  getConversation(ctx: HttpContext) {
+    return this.conversationsService.getConversation(ctx.params.id)
+  }
 }

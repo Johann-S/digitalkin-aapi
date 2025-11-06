@@ -315,6 +315,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get conversation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/conversations/Nmf5a5O8mgV-ZF-9QO92u",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"conversations",
+								"Nmf5a5O8mgV-ZF-9QO92u"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

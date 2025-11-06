@@ -109,6 +109,23 @@ export default class ConversationsService {
     }
   }
 
+  async getConversation(conversationId: string) {
+    const fetchConversation = await asyncWrap(
+      this.conversationsRepository.getConversation(conversationId)
+    )
+
+    if (fetchConversation.error) {
+      logger.error(fetchConversation.error)
+      throw new InternalServerErrorException('Unable to get conversation')
+    }
+
+    if (!fetchConversation.result) {
+      throw new NotFoundException('Conversation not found')
+    }
+
+    return fetchConversation.result!
+  }
+
   async sendMessage(
     conversationId: string,
     data: Partial<SendMessageConversationRequest>,

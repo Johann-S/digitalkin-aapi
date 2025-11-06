@@ -9,7 +9,7 @@
     "start": "node bin/server.js",
     "build": "node ace build",
     "dev": "node ace serve --hmr",
-    "test": "npm run lint && npm run build",
+    "test": "npm run lint && npm run typecheck && npm run build",
     "test:unit": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",

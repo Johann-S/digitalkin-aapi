@@ -169,10 +169,10 @@ curl -X POST http://localhost:3300/conversations/wMsKuMaJHb3gScmPHlsSQ/messages 
 
 ### 📜 Get All Messages in a Conversation
 
-**GET** `/conversations/:id/messages`
+**GET** `/conversations/:id`
 
 ```bash
-curl http://localhost:3300/conversations/wMsKuMaJHb3gScmPHlsSQ/messages
+curl http://localhost:3300/conversations/wMsKuMaJHb3gScmPHlsSQ
 ```
 
 **Response**
